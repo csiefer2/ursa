@@ -20,6 +20,13 @@ from ursa.agents.execution_agent import ExecutionAgent
 from .base import BaseAgent
 
 
+from copy import deepcopy
+from trafilatura.settings import DEFAULT_CONFIG
+import trafilatura
+TRAF_CONFIG = deepcopy(DEFAULT_CONFIG)
+TRAF_CONFIG["DEFAULT"]["EXTRACTION_TIMEOUT"] = "0"
+
+
 working = True
 try:
     import atomman as am
@@ -328,6 +335,7 @@ class LammpsAgent(BaseAgent[LammpsState]):
             include_tables=True,
             include_links=False,
             favor_recall=True,
+            config=TRAF_CONFIG,
         )
         if not text:
             return "No metadata available"
@@ -760,3 +768,20 @@ class LammpsAgent(BaseAgent[LammpsState]):
         )
 
         self.graph.add_edge("_summarize", END)
+
+
+
+
+    def format_query(self, prompt: str, state: Optional[LammpsState] = None) -> LammpsState:
+        """
+        Convert plain-text prompt into the structured state the graph expects.
+        Ensure simulation_task is always present to avoid KeyError.
+        """
+        st: LammpsState = dict(state or {})  # copy so we don't mutate caller state
+        st.setdefault("simulation_task", prompt)
+        st.setdefault("template", None)
+        return st
+
+
+
+
