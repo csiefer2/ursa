@@ -782,6 +782,8 @@ class LammpsAgent(BaseAgent[LammpsState]):
         st.setdefault("template", None)
         return st
 
+    def format_result(self, state: LammpsState) -> str:
+        return "LAMMPS run successful. Exiting....."
 
 
 
