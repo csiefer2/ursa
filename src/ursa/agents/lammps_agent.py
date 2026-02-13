@@ -19,7 +19,6 @@ from ursa.agents.execution_agent import ExecutionAgent
 
 from .base import BaseAgent
 
-import traceback
 
 working = True
 try:
@@ -398,9 +397,7 @@ class LammpsAgent(BaseAgent[LammpsState]):
         return "summarize_done"
 
     def _summarize_one(self, state: LammpsState) -> LammpsState:
-        traceback.print_stack()
         print(state)
-        exit(1)
         i = state["idx"]
         self._section(f"Summarizing potential #{i}")
         match = state["matches"][i]
