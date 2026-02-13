@@ -210,6 +210,7 @@ class ExecutionAgent(AgentWithTools, BaseAgent[ExecutionState]):
         ]
         if extra_tools:
             default_tools.extend(extra_tools)
+        print('Starting ExecuteAgent with extra_tools: ',extra_tools)
 
         super().__init__(llm=llm, tools=default_tools, **kwargs)
         self.agent_memory = agent_memory

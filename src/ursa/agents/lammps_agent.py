@@ -19,6 +19,8 @@ from ursa.agents.execution_agent import ExecutionAgent
 
 from .base import BaseAgent
 
+import traceback
+
 working = True
 try:
     import atomman as am
@@ -47,8 +49,10 @@ class LammpsState(TypedDict, total=False):
 
     fix_attempts: int
 
-
 class LammpsAgent(BaseAgent[LammpsState]):
+    """Agent that calls the LAMMPS Code to do a molecular dynamics simulation"""
+
+
     state_type = LammpsState
 
     def __init__(
@@ -316,7 +320,7 @@ class LammpsAgent(BaseAgent[LammpsState]):
         }
 
     def _fetch_and_trim_text(self, url: str) -> str:
-        downloaded = trafilatura.fetch_url(url)
+        downloaded = trafilatura.fetch_url(url,no_ssl=True)
         if not downloaded:
             return "No metadata available"
         text = trafilatura.extract(
@@ -368,6 +372,7 @@ class LammpsAgent(BaseAgent[LammpsState]):
 
     def _find_potentials(self, state: LammpsState) -> LammpsState:
         db = am.library.Database(remote=True)
+        state["elements"]=["Cu","Al"] # CMS HAX
         matches = db.get_lammps_potentials(
             pair_style=self.pair_styles, elements=state["elements"]
         )
@@ -393,6 +398,9 @@ class LammpsAgent(BaseAgent[LammpsState]):
         return "summarize_done"
 
     def _summarize_one(self, state: LammpsState) -> LammpsState:
+        traceback.print_stack()
+        print(state)
+        exit(1)
         i = state["idx"]
         self._section(f"Summarizing potential #{i}")
         match = state["matches"][i]

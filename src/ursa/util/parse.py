@@ -357,8 +357,9 @@ def extract_main_text_only(html: str, *, max_chars: int = 250_000) -> str:
     cfg.set("DEFAULT", "favor_recall", "false")  # be stricter; less noise
     try:
         # If you fetched HTML already, use extract() on string; otherwise, fetch_url(url)
+        downloaded = trafilatura.fetch_url(html,no_ssl=True)
         txt = trafilatura.extract(
-            html,
+            downloaded,
             config=cfg,
             include_comments=False,
             include_tables=False,

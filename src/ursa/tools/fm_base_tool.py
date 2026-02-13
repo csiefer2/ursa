@@ -167,11 +167,12 @@ class TorchModuleTool(
     def add_to_fastmcp(self, server: FastMCP) -> FastMCPTool:
         """Add `self` as a tool to `server`"""
         fasttool = self.__to_fastmcp()
-
         if fasttool.name not in server._tool_manager._tools:
             server._tool_manager._tools[fasttool.name] = fasttool
+            print('CMS: Adding tool:',fasttool.name)
 
         elif server._tool_manager.warn_on_duplicate_tools:
             logging.warning(f"Tool already exists: {fasttool.name}")
+
 
         return fasttool
